@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+  web:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    command: uvicorn src.app.web.api.app:app --host 0.0.0.0 --port 8000 --workers 2
+    env_file:
+      - .env
+    environment:
+      - ENVIRONMENT=PROD
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
